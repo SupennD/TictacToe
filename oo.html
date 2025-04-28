@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tic-Tac-Toe</title>
+    <style>
+      .board {
+        display: grid;
+        grid-template-columns: repeat(3, 100px);
+        grid-template-rows: repeat(3, 100px);
+        margin: 20px auto;
+        width: max-content;
+        border: 2px solid #000;
+      }
+      button {
+        width: 100px;
+        height: 100px;
+        font-size: 36px;
+        text-align: center;
+        background-color: #f0f0f0;
+        border: 1px solid #ccc;
+        cursor: pointer;
+      }
+      #reset {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        font-size: 16px;
+        cursor: pointer;
+        border-radius: 5px;
+        transition: background-color 0.3s ease;
+        height: 50px;
+        width: 200px;
+      }
+      #reset:hover {
+        background-color: #0056b3;
+      }
+    </style>
+  </head>
+  <body>
+    <h1 style="text-align: center">Tic-Tac-Toe</h1>
+    <h3 id="status" style="text-align: center">X's turn</h3>
+
+    <div class="board">
+      <button id="0" onclick="game.makeMove(0)"></button>
+      <button id="1" onclick="game.makeMove(1)"></button>
+      <button id="2" onclick="game.makeMove(2)"></button>
+      <button id="3" onclick="game.makeMove(3)"></button>
+      <button id="4" onclick="game.makeMove(4)"></button>
+      <button id="5" onclick="game.makeMove(5)"></button>
+      <button id="6" onclick="game.makeMove(6)"></button>
+      <button id="7" onclick="game.makeMove(7)"></button>
+      <button id="8" onclick="game.makeMove(8)"></button>
+    </div>
+
+    <button
+      id="reset"
+      style="display: block; margin: auto"
+      onclick="game.resetGame()"
+    >
+      Reset Game
+    </button>
+
+    <script>
+      class Game {
+        constructor() {
+          this.playerX = "X";
+          this.playerY = "O";
+          this.turn = this.playerX;
+          this.grids = new Array(9).fill(null);
+          this.gameOver = false;
+          this.status = document.getElementById("status");
+        }
+
+        makeMove(index) {
+          if (this.grids[index] === null && !this.gameOver) {
+            this.grids[index] = this.turn;
+            document.getElementById(index).textContent = this.turn;
+            if (this.checkWin()) {
+              this.status.textContent = `${this.turn} wins!`;
+              this.gameOver = true;
+            } else if (this.grids.every((cell) => cell !== null)) {
+              this.status.textContent = "It's a tie!";
+              this.gameOver = true;
+            } else {
+              this.turn =
+                this.turn === this.playerX ? this.playerY : this.playerX;
+              this.status.textContent = `${this.turn}'s turn`;
+            }
+          }
+        }
+
+        checkWin() {
+          const winningCombinations = [
+            [0, 1, 2],
+            [3, 4, 5],
+            [6, 7, 8],
+            [0, 3, 6],
+            [1, 4, 7],
+            [2, 5, 8],
+            [0, 4, 8],
+            [2, 4, 6],
+          ];
+
+          const winner = winningCombinations.find((combination) => {
+            const [a, b, c] = combination;
+            return (
+              this.grids[a] !== null &&
+              this.grids[a] === this.grids[b] &&
+              this.grids[a] === this.grids[c]
+            );
+          });
+
+          if (winner) {
+            const [a, b, c] = winner;
+            document.getElementById(a).style.backgroundColor = "lightgreen";
+            document.getElementById(b).style.backgroundColor = "lightgreen";
+            document.getElementById(c).style.backgroundColor = "lightgreen";
+            return true;
+          }
+
+          return false;
+        }
+
+        resetGame() {
+          this.grids.fill(null);
+          this.gameOver = false;
+          this.turn = this.playerX;
+          this.status.textContent = `${this.turn}'s turn`;
+          for (let i = 0; i < 9; i++) {
+            const cell = document.getElementById(i);
+            cell.textContent = "";
+            cell.style.backgroundColor = "";
+          }
+        }
+      }
+      let game = new Game();
+    </script>
+  </body>
+</html>

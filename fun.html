@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tic-Tac-Toe</title>
+    <style>
+      .board {
+        display: grid;
+        grid-template-columns: repeat(3, 100px);
+        grid-template-rows: repeat(3, 100px);
+        margin: 20px auto;
+        width: max-content;
+        border: 2px solid #000;
+      }
+      button {
+        width: 100px;
+        height: 100px;
+        font-size: 36px;
+        text-align: center;
+        background-color: #f0f0f0;
+        border: 1px solid #ccc;
+        cursor: pointer;
+      }
+      #reset {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        font-size: 16px;
+        cursor: pointer;
+        border-radius: 5px;
+        transition: background-color 0.3s ease;
+        height: 50px;
+        width: 200px;
+      }
+      #reset:hover {
+        background-color: #0056b3;
+      }
+    </style>
+  </head>
+  <body>
+    <h1 style="text-align: center">Tic-Tac-Toe</h1>
+    <h3 id="status" style="text-align: center">X's turn</h3>
+
+    <div class="board">
+      <button id="0" onclick="makeMove(0)"></button>
+      <button id="1" onclick="makeMove(1)"></button>
+      <button id="2" onclick="makeMove(2)"></button>
+      <button id="3" onclick="makeMove(3)"></button>
+      <button id="4" onclick="makeMove(4)"></button>
+      <button id="5" onclick="makeMove(5)"></button>
+      <button id="6" onclick="makeMove(6)"></button>
+      <button id="7" onclick="makeMove(7)"></button>
+      <button id="8" onclick="makeMove(8)"></button>
+    </div>
+
+    <button
+      id="reset"
+      style="display: block; margin: auto"
+      onclick="resetGame()"
+    >
+      Reset Game
+    </button>
+
+    <script>
+        const winPatterns = [
+          [0, 1, 2], [3, 4, 5], [6, 7, 8],
+          [0, 3, 6], [1, 4, 7], [2, 5, 8],
+          [0, 4, 8], [2, 4, 6],
+        ];
+  
+        let gameState = {
+          currentPlayer: "X",
+          board: Array(9).fill(null),
+          gameOver: false,
+        };
+  
+        const checkWin = (board) =>
+          winPatterns.find(([a, b, c]) => board[a] && board[a] === board[b] && board[a] === board[c]);
+  
+        const makeMove = (index) => {
+          if (gameState.board[index] || gameState.gameOver) return;
+  
+          gameState.board[index] = gameState.currentPlayer;
+          document.getElementById(index).innerText = gameState.currentPlayer;
+  
+          const winner = checkWin(gameState.board);
+          if (winner) {
+            gameState.gameOver = true;
+            winner.forEach((i) => (document.getElementById(i).style.backgroundColor = "lightgreen"));
+            document.getElementById("status").innerText = `${gameState.currentPlayer} Wins!`;
+            return;
+          }
+  
+          if (!gameState.board.includes(null)) {
+            gameState.gameOver = true;
+            document.getElementById("status").innerText = "It's a Tie!";
+            return;
+          }
+  
+          gameState.currentPlayer = gameState.currentPlayer === "X" ? "O" : "X";
+          document.getElementById("status").innerText = `${gameState.currentPlayer}'s turn`;
+        };
+  
+        const resetGame = () => {
+          gameState = { currentPlayer: "X", board: Array(9).fill(null), gameOver: false };
+          [...document.querySelectorAll(".board button")].forEach((button, i) => {
+            button.innerText = "";
+            button.style.backgroundColor = "";
+          });
+          document.getElementById("status").innerText = "X's turn";
+        };
+      </script>
+  </body>
+</html>
